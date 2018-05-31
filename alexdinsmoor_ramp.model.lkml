@@ -1,17 +1,6 @@
 connection: "thelook_events"
 
-# include all views except for bsandell and company_list, which contain extraneous data
-include: "distribution_centers.view"
-include: "events.view"
-include: "inventory_items.view"
-include: "order_items.view"
-include: "products.view"
-include: "users.view"
-
-# add derived views
-include: "users_facts.view"
-include: "orders_facts.view"
-include: "product_facts.view"
+include: "*.view.lkml"
 
 # include all the dashboards
 include: "*.dashboard"
