@@ -11,6 +11,7 @@ include: "users.view"
 # add derived views
 include: "users_facts.view"
 include: "orders_facts.view"
+include: "product_facts.view"
 
 # include all the dashboards
 include: "*.dashboard"
@@ -21,6 +22,10 @@ datagroup: alexdinsmoor_ramp_default_datagroup {
 }
 
 persist_with: alexdinsmoor_ramp_default_datagroup
+
+explore: product_facts {
+  hidden:  yes
+}
 
 explore: users {
   persist_with: alexdinsmoor_ramp_default_datagroup
@@ -111,6 +116,13 @@ explore: order_items {
     type: inner
     sql_on: ${order_items.user_id} = ${users.id} ;;
     relationship: many_to_one
+  }
+
+  join: users_facts {
+    view_label: "Users"
+    type:  left_outer
+    sql_on:  ${users.id} = ${users_facts.user_id} ;;
+    relationship: one_to_one
   }
 
   join: inventory_items {

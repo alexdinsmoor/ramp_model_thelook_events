@@ -1,4 +1,5 @@
 include: "orders_facts.view*"
+include: "inventory_items.view*"
 
 view: order_items {
   sql_table_name: public.order_items ;;
@@ -314,12 +315,16 @@ view: order_items {
   # ----- Sets of fields for drilling ------
   set: order_details {
     fields: [
-      order_items.*,
+      order_items.created_at_date,
+      order_items.delivered_at_date,
+      order_items.shipped_at_date,
+      order_items.status,
+      order_items.sale_price,
       inventory_items.cost,
       inventory_items.product_brand,
       inventory_items.product_category,
       inventory_items.product_department,
-      inventory_items.product_name,
+      inventory_items.product_name
     ]
   }
 

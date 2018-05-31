@@ -14,6 +14,7 @@ view: orders_facts {
           sql: RANK() OVER (PARTITION BY user_id ORDER BY created_at) ;;
         }
       }
+      persist_for: "4 hours"
       sortkeys: ["order_id"]
       distribution: "order_id"
     }
@@ -65,14 +66,18 @@ dimension: first_purchase_indicator {
 }
 
 # ----- Sets of fields for drilling ------
-set: order_details {
-fields: [
-  order_items.*,
-  inventory_items.cost,
-  inventory_items.product_brand,
-  inventory_items.product_category,
-  inventory_items.product_department,
-  inventory_items.product_name,
-]
-}
+  set: order_details {
+    fields: [
+      order_items.created_at_date,
+      order_items.delivered_at_date,
+      order_items.shipped_at_date,
+      order_items.status,
+      order_items.sale_price,
+      inventory_items.cost,
+      inventory_items.product_brand,
+      inventory_items.product_category,
+      inventory_items.product_department,
+      inventory_items.product_name
+    ]
+  }
 }

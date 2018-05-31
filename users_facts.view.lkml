@@ -72,7 +72,7 @@ view: users_facts {
     drill_fields: [user_facts_details*]
   }
   measure: user_count_with_order {
-    description: "User has placed one or more order"
+    description: "User has placed one or more orders"
     type: count
     filters: {
       field: order_count
@@ -80,19 +80,21 @@ view: users_facts {
     }
     drill_fields: [user_facts_details*]
   }
+
+  measure: average_lifetime_revenue {
+    type:  average
+    sql: ${lifetime_revenue} ;;
+    drill_fields: [user_facts_details*]
+    value_format_name: usd_0
+  }
+
   measure: user_count_with_multiple_orders {
-    description: "User has placed more than one order"
+    description: "User has placed more than one orders"
     type: count
     filters: {
       field: order_count
       value: ">1"
     }
-    drill_fields: [user_facts_details*]
-  }
-
-  measure: average_web_action_taken_count {
-    type: average
-    sql: ${item_added_to_cart_ind} ;;
     drill_fields: [user_facts_details*]
   }
 
@@ -116,6 +118,26 @@ view: users_facts {
     sql: ${TABLE}.first_order_date ;;
   }
 
+  measure: minimum_first_order {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      day_of_week,
+      day_of_month,
+      week,
+      week_of_year,
+      month,
+      month_num,
+      month_name,
+      quarter,
+      quarter_of_year,
+      year
+    ]
+    sql: min(${TABLE}.first_order_date) ;;
+  }
+
   dimension_group: last_order {
     type: time
     timeframes: [
@@ -134,6 +156,25 @@ view: users_facts {
       year
     ]
     sql: ${TABLE}.last_order_date ;;
+  }
+  measure: maximum_last_order {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      day_of_week,
+      day_of_month,
+      week,
+      week_of_year,
+      month,
+      month_num,
+      month_name,
+      quarter,
+      quarter_of_year,
+      year
+    ]
+    sql: max(${TABLE}.last_order_date) ;;
   }
 
   #drill fields

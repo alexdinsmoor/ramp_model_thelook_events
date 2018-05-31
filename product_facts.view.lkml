@@ -3,13 +3,13 @@ view: product_facts {
     sql: select ii.product_category, sum(oi.sale_price) as total_revenue, sum(ii.cost) as total_cost,
       sum(oi.sale_price) - sum(ii.cost) as total_gross_margin,
       rank() over (order by total_revenue desc) as product_category_rank_by_revenue,
-      case when rank() over (order by total_revenue desc)  < 10 then ii.product_category else 'Other' end as modified_category_name_by_revenue,
+      case when rank() over (order by total_revenue desc)  <= 15 then ii.product_category else 'Other' end as modified_category_name_by_revenue,
       rank() over (order by total_gross_margin desc) as product_category_rank_by_margin,
-      case when rank() over (order by total_gross_margin desc) < 10 then ii.product_category else 'Other' end as modified_category_name_by_margin
+      case when rank() over (order by total_gross_margin desc) <= 15 then ii.product_category else 'Other' end as modified_category_name_by_margin
       from order_items as oi
       left join inventory_items as ii on oi.inventory_item_id = ii.id
       group by 1
-      order by 2 desc;
+      order by 2 desc
        ;;
   }
 
@@ -24,22 +24,25 @@ view: product_facts {
     drill_fields: [product_details*]
   }
 
-  dimension: total_revenue {
-    type: number
+  measure: total_revenue {
+    type: sum
     sql: ${TABLE}.total_revenue ;;
     drill_fields: [product_details*]
+    value_format_name: usd_0
   }
 
-  dimension: total_cost {
-    type: number
+  measure: total_cost {
+    type: sum
     sql: ${TABLE}.total_cost ;;
     drill_fields: [product_details*]
+    value_format_name: usd_0
   }
 
-  dimension: total_gross_margin {
-    type: number
+  measure: total_gross_margin {
+    type: sum
     sql: ${TABLE}.total_gross_margin ;;
     drill_fields: [product_details*]
+    value_format_name: usd_0
   }
 
   dimension: product_category_rank_by_revenue {
@@ -50,7 +53,7 @@ view: product_facts {
   }
 
   dimension: modified_category_name_by_revenue {
-    description: "Top 9 categories by total revenue retain name and the rest are bundled into 'Other'"
+    description: "Top 15 categories by total revenue retain name and the rest are bundled into 'Other'"
     type: string
     sql: ${TABLE}.modified_category_name_by_revenue ;;
     drill_fields: [product_details*]
@@ -64,7 +67,7 @@ view: product_facts {
   }
 
   dimension: modified_category_name_by_margin {
-    description: "Top 9 categories by total margin retain name and the rest are bundled into 'Other'"
+    description: "Top 15 categories by total margin retain name and the rest are bundled into 'Other'"
     type: string
     sql: ${TABLE}.modified_category_name_by_margin ;;
     drill_fields: [product_details*]

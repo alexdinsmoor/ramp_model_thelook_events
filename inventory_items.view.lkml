@@ -143,7 +143,7 @@ view: inventory_items {
       inventory_items.product_id,
       inventory_items.product_name,
       inventory_items.product_retail_price,
-      inventory_items.product_cost,
+      inventory_items.product_cost
     ]
   }
 }
