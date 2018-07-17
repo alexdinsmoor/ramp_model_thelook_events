@@ -80,6 +80,13 @@ explore: inventory_items {
 #we can perform inner join between order_items and users here because all users in the order_items table will exist in the users table
 
 explore: order_items {
+#   access_filter: {
+#     field: products.brand
+#     user_attribute: brand
+#   }
+
+#   sql_always_where: ${products.brand} = '{{_user_attributes["brand"] }}' ;;
+
   fields: [
     ALL_FIELDS*,
     -inventory_items.product_category,

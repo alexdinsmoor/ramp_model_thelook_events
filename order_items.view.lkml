@@ -109,6 +109,15 @@ view: order_items {
   dimension: status {
     type: string
     sql: ${TABLE}.status ;;
+    html:
+    {% if value == 'Complete' %}
+    <div style="background-color:#D5EFEE">{{ value }}</div>
+    {% elsif value == 'Processing' or value == 'Shipped' %}
+    <div style="background-color:#FCECCC">{{ value }}</div>
+    {% elsif value == 'Cancelled' or value == 'Returned' %}
+    <div style="background-color:#EFD5D6">{{ value }}</div>
+    {% endif %}
+    ;;
   }
 
   dimension: user_id {
@@ -208,7 +217,7 @@ view: order_items {
 
   dimension: previous_start_date {
     type: string
-    sql: DATEADD(day, - ${interval}, ${filter_start_date_raw});;
+    sql: DATEADD(day, - (${interval}+1), ${filter_start_date_raw});;
   }
 
   dimension: is_current_period {
@@ -223,7 +232,7 @@ view: order_items {
 
   dimension: timeframes {
     description: "Use this field in combination with the date filter field for dynamic date filtering"
-    suggestions: ["period","previous period"]
+    suggestions: ["this period","previous period"]
     type: string
     case: {
       when: {
