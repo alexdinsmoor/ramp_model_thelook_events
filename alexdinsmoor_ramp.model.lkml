@@ -5,6 +5,8 @@ include: "*.view.lkml"
 # include all the dashboards
 include: "*.dashboard"
 
+fiscal_month_offset: 6
+
 datagroup: alexdinsmoor_ramp_default_datagroup {
   # sql_trigger: SELECT MAX(id) FROM etl_log;;
   max_cache_age: "4 hours"

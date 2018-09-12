@@ -25,7 +25,10 @@ view: order_items {
       month_name,
       quarter,
       quarter_of_year,
-      year
+      year,
+      fiscal_year,
+      fiscal_quarter,
+      fiscal_quarter_of_year
     ]
     sql: ${TABLE}.created_at ;;
   }

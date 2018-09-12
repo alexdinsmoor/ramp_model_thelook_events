@@ -113,7 +113,8 @@ view: users_facts {
       month_name,
       quarter,
       quarter_of_year,
-      year
+      year,
+      fiscal_year
     ]
     sql: ${TABLE}.first_order_date ;;
   }
