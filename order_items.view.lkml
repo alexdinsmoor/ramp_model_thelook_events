@@ -131,12 +131,38 @@ view: order_items {
 
   #logistical shipping measures
 
-  measure: days_to_ship {
+  dimension: days_to_ship {
     description: "Days between order creation date and order shipped date"
     type: number
     sql:  1.0*datediff(days,${created_date},${shipped_date}) ;;
     drill_fields: [order_details*]
     value_format: "0.00"
+    html:
+    {% if  {{color_status._rendered_value}} == 'Green' %}
+    <div style="background-color:#D5EFEE">{{ value }}</div>
+    {% elsif  {{color_status._rendered_value}} == 'Yellow' %}
+    <div style="background-color:#FCECCC">{{ value }}</div>
+    {% elsif {{color_status._rendered_value}} == 'Red' %}
+    <div style="background-color:#EFD5D6">{{ value }}</div>
+    {% endif %}
+    ;;
+  }
+
+  dimension: dynamic_status_threshold {
+    type: number
+    sql: case
+            when ${status} = 'Complete' then 2
+            when ${status} = 'Shipped' then 4
+            when ${status} = 'Returned' then 6
+        else null end ;;
+  }
+
+  dimension: color_status {
+    type: string
+    sql: case when ${days_to_ship} < ${dynamic_status_threshold} then 'Red'
+          when ${days_to_ship} = ${dynamic_status_threshold} then 'Yellow'
+          when ${days_to_ship} > ${dynamic_status_threshold} then 'Green'
+        else 'Unknown' end ;;
   }
 
   measure: days_to_deliver{
@@ -279,6 +305,13 @@ view: order_items {
     nullif(cast(${previous_period_order_revenue} as float),0) - 1.00 ;;
     value_format_name: percent_1
     drill_fields: [order_details*]
+    }
+
+  measure: fuel_gauge_example {
+    type: number
+    sql:  20 ;;
+    value_format: "#.0\%"
+    html:   <img src="https://chart.googleapis.com/chart?chs=400x250&cht=gom&chma=10,0,0,0&chxt=y&chco=635189,B1A8C4,1EA8DF,8ED3EF&chf=bg,s,FFFFFF00&chl={{ rendered_value }}&chd=t:{{ value }}">;;
   }
 
   measure: selected_period_order_item_count {
